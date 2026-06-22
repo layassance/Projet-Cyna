@@ -1,0 +1,7 @@
+---
+- name: Déployer le serveur web CYNA
+  hosts: web
+  become: yes
+  roles:
+    - common
+    - nginx_web

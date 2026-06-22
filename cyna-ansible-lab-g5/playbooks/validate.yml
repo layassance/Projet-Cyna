@@ -1,0 +1,6 @@
+---
+- name: Vérifier les services Linux CYNA
+  hosts: linux_targets
+  become: yes
+  roles:
+    - validation

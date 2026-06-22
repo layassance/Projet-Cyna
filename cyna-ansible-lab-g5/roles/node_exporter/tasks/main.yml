@@ -1,0 +1,56 @@
+---
+- name: Créer l'utilisateur node_exporter
+  user:
+    name: "{{ node_exporter_user }}"
+    shell: /usr/sbin/nologin
+    system: yes
+    create_home: no
+
+- name: Télécharger Node Exporter
+  get_url:
+    url: "https://github.com/prometheus/node_exporter/releases/download/v{{ node_exporter_version }}/node_exporter-{{ node_exporter_version }}.linux-amd64.tar.gz"
+    dest: "/tmp/node_exporter-{{ node_exporter_version }}.linux-amd64.tar.gz"
+    mode: "0644"
+
+- name: Décompresser Node Exporter
+  unarchive:
+    src: "/tmp/node_exporter-{{ node_exporter_version }}.linux-amd64.tar.gz"
+    dest: /tmp
+    remote_src: yes
+
+- name: Installer le binaire node_exporter
+  copy:
+    src: "/tmp/node_exporter-{{ node_exporter_version }}.linux-amd64/node_exporter"
+    dest: /usr/local/bin/node_exporter
+    owner: root
+    group: root
+    mode: "0755"
+    remote_src: yes
+  notify: Restart node_exporter
+
+- name: Créer le service systemd node_exporter
+  template:
+    src: node_exporter.service.j2
+    dest: /etc/systemd/system/node_exporter.service
+    owner: root
+    group: root
+    mode: "0644"
+  notify:
+    - Reload systemd
+    - Restart node_exporter
+
+- name: Démarrer et activer node_exporter
+  service:
+    name: node_exporter
+    state: started
+    enabled: yes
+
+- name: Tester Node Exporter localement
+  uri:
+    url: "http://127.0.0.1:{{ node_exporter_port }}/metrics"
+    status_code: 200
+  register: node_exporter_check
+
+- name: Afficher le résultat node_exporter
+  debug:
+    msg: "Node Exporter opérationnel sur {{ inventory_hostname }} avec le code {{ node_exporter_check.status }}"

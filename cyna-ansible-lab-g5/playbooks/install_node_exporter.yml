@@ -1,0 +1,7 @@
+---
+- name: Installer Node Exporter sur les machines Linux CYNA
+  hosts: linux_targets
+  become: yes
+  roles:
+    - common
+    - node_exporter

@@ -1,0 +1,22 @@
+---
+- name: Vérifier node_exporter
+  shell: systemctl is-active node_exporter
+  register: node_exporter_status
+  failed_when: false
+  changed_when: false
+
+- name: Afficher état node_exporter
+  debug:
+    msg: "{{ inventory_hostname }} - node_exporter : {{ node_exporter_status.stdout | default('non installé') }}"
+
+- name: Vérifier nginx sur le serveur web
+  shell: systemctl is-active nginx
+  register: nginx_status
+  failed_when: false
+  changed_when: false
+  when: "'web' in group_names"
+
+- name: Afficher état nginx
+  debug:
+    msg: "{{ inventory_hostname }} - nginx : {{ nginx_status.stdout | default('non concerné') }}"
+  when: "'web' in group_names"

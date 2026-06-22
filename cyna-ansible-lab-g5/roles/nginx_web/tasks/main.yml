@@ -1,0 +1,64 @@
+---
+- name: Installer nginx
+  apt:
+    name: nginx
+    state: present
+    update_cache: yes
+
+- name: Créer le dossier du site CYNA
+  file:
+    path: "/var/www/{{ nginx_site_name }}"
+    state: directory
+    owner: www-data
+    group: www-data
+    mode: "0755"
+
+- name: Déployer la page web CYNA
+  template:
+    src: index.html.j2
+    dest: "/var/www/{{ nginx_site_name }}/index.html"
+    owner: www-data
+    group: www-data
+    mode: "0644"
+
+- name: Déployer la configuration nginx
+  template:
+    src: cyna.conf.j2
+    dest: "/etc/nginx/sites-available/{{ nginx_site_name }}"
+    owner: root
+    group: root
+    mode: "0644"
+  notify: Reload nginx
+
+- name: Activer le site CYNA
+  file:
+    src: "/etc/nginx/sites-available/{{ nginx_site_name }}"
+    dest: "/etc/nginx/sites-enabled/{{ nginx_site_name }}"
+    state: link
+  notify: Reload nginx
+
+- name: Désactiver le site par défaut
+  file:
+    path: /etc/nginx/sites-enabled/default
+    state: absent
+  notify: Reload nginx
+
+- name: Vérifier la configuration nginx
+  command: nginx -t
+  changed_when: false
+
+- name: Démarrer et activer nginx
+  service:
+    name: nginx
+    state: started
+    enabled: yes
+
+- name: Tester la page web locale
+  uri:
+    url: "http://127.0.0.1:{{ nginx_port }}"
+    status_code: 200
+  register: nginx_check
+
+- name: Afficher le résultat nginx
+  debug:
+    msg: "Nginx opérationnel sur {{ inventory_hostname }} avec le code {{ nginx_check.status }}"

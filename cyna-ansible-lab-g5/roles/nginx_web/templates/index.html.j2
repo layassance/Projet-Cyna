@@ -1,0 +1,13 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <title>CYNA - Serveur web</title>
+</head>
+<body>
+  <h1>CYNA - Serveur web opérationnel</h1>
+  <p>Machine : {{ inventory_hostname }}</p>
+  <p>Adresse : {{ ansible_host | default('locale') }}</p>
+  <p>Déploiement : Ansible</p>
+</body>
+</html>

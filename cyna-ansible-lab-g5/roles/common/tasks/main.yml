@@ -1,0 +1,20 @@
+---
+- name: Vérifier que la machine est Debian ou Ubuntu
+  assert:
+    that:
+      - ansible_os_family == "Debian"
+    fail_msg: "Ce rôle est prévu pour Debian/Ubuntu."
+
+- name: Mettre à jour le cache APT
+  apt:
+    update_cache: yes
+    cache_valid_time: 3600
+
+- name: Installer les paquets communs
+  apt:
+    name: "{{ common_packages }}"
+    state: present
+
+- name: Configurer le fuseau horaire
+  timezone:
+    name: "{{ timezone }}"

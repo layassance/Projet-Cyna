@@ -1,0 +1,20 @@
+---
+- name: PRA simple - relancer le serveur web
+  hosts: web
+  become: yes
+
+  tasks:
+    - name: Redémarrer nginx
+      service:
+        name: nginx
+        state: restarted
+
+    - name: Tester la page web locale
+      uri:
+        url: "http://127.0.0.1:{{ nginx_port | default(80) }}"
+        status_code: 200
+      register: web_check
+
+    - name: Résultat du test PRA web
+      debug:
+        msg: "Nginx a été relancé correctement. Code HTTP : {{ web_check.status }}"
