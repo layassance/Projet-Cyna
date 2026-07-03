@@ -202,5 +202,3 @@ Durcissement appliqué via Ansible (rôle `common`) sur base **CIS Benchmark Ubu
 - **Région Azure imposée** : Poland Central (politique Azure for Students), non représentative de la localisation cible
 
 ---
-
-*Document d'Architecture Technique (DAT) complet disponible dans le dépôt.*
