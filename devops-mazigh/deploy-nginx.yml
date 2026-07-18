@@ -1,0 +1,32 @@
+---
+- name: Deploiement du serveur web CYNA
+  hosts: web
+  become: yes
+
+  tasks:
+    - name: Installer Nginx
+      apt:
+        name: nginx
+        state: present
+        update_cache: yes
+
+    - name: Deployer une page web CYNA
+      copy:
+        dest: /var/www/html/index.html
+        content: |
+          <html>
+          <head>
+            <title>CYNA - Serveur Web</title>
+          </head>
+          <body>
+            <h1>CYNA - Serveur Web DMZ</h1>
+            <p>Cette page a ete deployee automatiquement avec Ansible.</p>
+            <p>Serveur : WEB-CYNA - 10.0.10.10</p>
+          </body>
+          </html>
+
+    - name: Activer et demarrer Nginx
+      service:
+        name: nginx
+        state: started
+        enabled: yes

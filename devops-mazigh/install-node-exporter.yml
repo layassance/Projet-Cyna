@@ -1,0 +1,17 @@
+---
+- name: Installer Node Exporter sur WEB-CYNA
+  hosts: web
+  become: yes
+
+  tasks:
+    - name: Installer Node Exporter
+      apt:
+        name: prometheus-node-exporter
+        state: present
+        update_cache: yes
+
+    - name: Demarrer et activer Node Exporter
+      service:
+        name: prometheus-node-exporter
+        state: started
+        enabled: yes

@@ -1,0 +1,23 @@
+Projet : CYNA DevOps Monitoring
+
+Reseaux :
+- LAN interne : 10.0.20.0/24
+- DMZ : 10.0.10.0/24
+- OPT2 : 10.0.40.0/24
+
+Passerelles pfSense :
+- pfSense LAN : 10.0.20.1
+- pfSense DMZ : 10.0.10.1
+
+Machines :
+- pfSense-CYNA : pare-feu central
+- DC1-Cyna : 10.0.20.10
+- ANSIBLE-CYNAA : 10.0.20.30
+- WEB-CYNA : 10.0.10.10
+
+Role DevOps :
+- Terraform decrit les elements principaux de l'infrastructure.
+- Terraform genere un inventaire Ansible.
+- Ansible utilise cet inventaire pour administrer WEB-CYNA.
+- Prometheus et Grafana supervisent WEB-CYNA.
+- Grafana envoie une alerte Discord si Node Exporter devient indisponible.
